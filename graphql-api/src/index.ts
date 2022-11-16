@@ -20,7 +20,7 @@ const main=async()=>{
 
     AppDataSource.initialize()
     .then(() => {
-        console.log("Table Created")
+        console.log("Database Connected")
     })
     .catch((error) => console.log(error))
    
