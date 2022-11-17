@@ -37,17 +37,18 @@
   left: 67%;
   top: -40%;
 }
-
+/* 
 .table{
+  
   width: 92%;
   height: 35vh;
-  /* border: 1px solid red; */
   background-color: rgb(235, 232, 232);
   border-radius: 20px;
   position: relative;
   left: 4%;
   top: -9%;
-}
+
+} */
 
 .customer{
   position: relative;

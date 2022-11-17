@@ -4,71 +4,100 @@ import firstImg from "../public/images.png";
 import styles from "../styles/Home.module.css";
 import { BiUserPlus } from "react-icons/bi";
 import { border } from "@mui/system";
-import { useState } from "react";
-import { useQuery,useMutation } from "@apollo/client";
+import { useState, useEffect } from "react";
+import { useQuery, useMutation } from "@apollo/client";
 
-import { CREATE_CUSTOMER, DELETE_CUSTOMER, UPDATE_CUSTOMER } from "./Graphql/Mutation";
+import {
+  CREATE_CUSTOMER,
+  DELETE_CUSTOMER,
+  UPDATE_CUSTOMER,
+} from "./Graphql/Mutation";
+
 import { GET_ALL_CUSTOMER } from "./Graphql/Queries";
 import { GET_SINGLE_CUSTOMER } from "./Graphql/Queries";
 import { rootShouldForwardProp } from "@mui/material/styles/styled";
 
 export default function Home() {
+  const [id, setId] = useState("");
+  const [name, setName] = useState("");
+  const [address, setAddress] = useState("");
+  const [email, setEmail] = useState("");
+  const [mobile, setMobile] = useState("");
+  const [dob, setDob] = useState("");
+  const [searchId, setSeacrhId] = useState("");
 
-  const [id,setId]=useState('');
-  const [name,setName]=useState('');
-  const [address,setAddress]=useState('');
-  const [email,setEmail]=useState('');
-  const [mobile,setMobile]=useState('');
-  const [dob,setDob]=useState('');
-  const [searchId,setSeacrhId]=useState('')
+  const [createCustomer] = useMutation(CREATE_CUSTOMER,{
+    onCompleted:(data)=>{
+      alert(data.createCustomer.message)
+    }
+  });
 
-  const {data}=useQuery(GET_ALL_CUSTOMER);
+  const [deleteCustomerById] = useMutation(DELETE_CUSTOMER,{
+    onCompleted:(data)=>{
+      alert(data.deleteCustomer.message)
+    }
+  });
 
-  const [createCustomer]=useMutation(CREATE_CUSTOMER);
-  const [deleteCustomerById]=useMutation(DELETE_CUSTOMER);
-  const [updateCustomerRecord]=useMutation(UPDATE_CUSTOMER);
+  const [updateCustomerRecord] = useMutation(UPDATE_CUSTOMER,{
+    onCompleted:(data)=>{
+      alert(data.updateCustomer.message)
+    }
+  });
 
-  // const [getSingleCustomer,{data}]=useQuery(GET_SINGLE_CUSTOMER);
+  const { data } = useQuery(GET_ALL_CUSTOMER);
 
-  const saveCustomer=()=>{
+  //const {data}=useQuery(GET_SINGLE_CUSTOMER);
+
+
+  const clearInputs = () => {
+    setId("");
+    setName("");
+    setAddress("");
+    setEmail("");
+    setDob("");
+    setMobile("");
+  };
+
+  const saveCustomer = () => {
     createCustomer({
       variables: {
         name: name,
         address: address,
         email: email,
-        mobile:mobile,
-        dob:dob,
+        mobile: mobile,
+        dob: dob,
       },
-    }
-    );
-  }
+    });
+    clearInputs();
+  };
 
-  const UpdateCustomer=()=>{
-    console.log("Update")
-    updateCustomerRecord({
-      variables: {
-        id:id,
-        name: name,
-        address: address,
-        email: email,
-        mobile:mobile,
-        dob:dob,
-      },
-    }
-    );
-  }
-
-  const deleteCustomer=()=>{
-    console.log("delete")
-    deleteCustomerById({
-      variables:{
-        id:id
+  const UpdateCustomer = () => {
+    updateCustomerRecord(
+      {
+        variables: {
+          id: id,
+          name: name,
+          address: address,
+          email: email,
+          mobile: mobile,
+          dob: dob,
+        },
       }
-    })
-  }
+    );
+    clearInputs();
+  };
 
-  const searchCustomer=()=>{
+  const deleteCustomer = () => {
+    deleteCustomerById({
+      variables: {
+        id: id,
+      },
+    });
+    clearInputs();
+  };
 
+  const searchCustomer = () => {
+   //const { data } = useQuery(GET_ALL_CUSTOMER);
     // getSingleCustomer({
     //   variables: {
     //     id: searchId,
@@ -76,7 +105,7 @@ export default function Home() {
     // }
     // );
     console.log(data)
-  }
+  };
 
   return (
     <>
@@ -103,14 +132,14 @@ export default function Home() {
                 type="search"
                 placeholder="Search"
                 aria-label="Search"
-                onChange={(e)=>setSeacrhId(e.target.value)}
+                onChange={(e) => setSeacrhId(e.target.value)}
+                value={searchId}
               />
               <button
                 className={styles.search}
                 class="btn btn-success my-2 my-sm-0"
                 type="button"
-                onClick={()=>searchCustomer()}
-              
+                onClick={() => searchCustomer()}
               >
                 Search
               </button>
@@ -132,7 +161,8 @@ export default function Home() {
                     type="text"
                     class="form-control ml-5 mt-4"
                     placeholder="Customer Id"
-                    onChange={(e)=>setId(e.target.value)}
+                    value={id}
+                    onChange={(e) => setId(e.target.value)}
                   />
                 </div>
                 <div class="col-5">
@@ -140,7 +170,8 @@ export default function Home() {
                     type="text"
                     class="form-control ml-5 mt-4"
                     placeholder="Name"
-                    onChange={(e)=>setName(e.target.value)}
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                   />
                 </div>
                 <div class="col-5">
@@ -148,7 +179,8 @@ export default function Home() {
                     type="text"
                     class="form-control ml-5 mt-3"
                     placeholder="Email"
-                    onChange={(e)=>setEmail(e.target.value)}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
                 <div class="col-5">
@@ -156,7 +188,8 @@ export default function Home() {
                     type="text"
                     class="form-control ml-5 mt-3"
                     placeholder="Contact"
-                    onChange={(e)=>setMobile(e.target.value)}
+                    value={mobile}
+                    onChange={(e) => setMobile(e.target.value)}
                   />
                 </div>
                 <div class="col-5">
@@ -164,7 +197,8 @@ export default function Home() {
                     type="text"
                     class="form-control ml-5 mt-3"
                     placeholder="Birthday"
-                    onChange={(e)=>setDob(e.target.value)}
+                    value={dob}
+                    onChange={(e) => setDob(e.target.value)}
                   />
                 </div>
                 <div class="col-5">
@@ -172,7 +206,8 @@ export default function Home() {
                     type="text"
                     class="form-control ml-5 mt-3"
                     placeholder="Address"
-                    onChange={(e)=>setAddress(e.target.value)}
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
                   />
                 </div>
               </div>
@@ -182,13 +217,25 @@ export default function Home() {
           {/* --button-- */}
 
           <section className={styles.button}>
-            <button type="button" class="btn btn-success mt-3 ml-5" onClick={()=>saveCustomer()}>
+            <button
+              type="submit"
+              class="btn btn-success mt-3 ml-5"
+              onClick={() => saveCustomer()}
+            >
               Add Customer
             </button>
-            <button type="button" class="btn btn-secondary mt-3" onClick={()=>UpdateCustomer()}>
+            <button
+              type="submit"
+              class="btn btn-secondary mt-3"
+              onClick={() => UpdateCustomer()}
+            >
               Update
             </button>
-            <button type="button" class="btn btn-danger mt-3" onClick={()=>deleteCustomer()}>
+            <button
+              type="submit"
+              class="btn btn-danger mt-3"
+              onClick={() => deleteCustomer()}
+            >
               Delete
             </button>
           </section>
@@ -207,18 +254,17 @@ export default function Home() {
                 </tr>
               </thead>
               <tbody>
-              {data &&
-                   data.getAllCustomer.map((row,index)=>(
+                {data &&
+                  data.getAllCustomer.map((row, index) => (
                     <tr key={index}>
-                    <th scope="row">{row.id}</th>
-                    <td>{row.name}</td>
-                    <td>{row.email}</td>
-                    <td>{row.mobile}</td>
-                    <td>{row.dob}</td>
-                    <td>{row.address}</td>
-                  </tr>
-                  ))
-                }
+                      <th scope="row">{row.id}</th>
+                      <td>{row.name}</td>
+                      <td>{row.email}</td>
+                      <td>{row.mobile}</td>
+                      <td>{row.dob}</td>
+                      <td>{row.address}</td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </section>
