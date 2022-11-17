@@ -7,7 +7,7 @@ import { border } from "@mui/system";
 import { useState } from "react";
 import { useQuery,useMutation } from "@apollo/client";
 
-import { CREATE_CUSTOMER } from "./Graphql/Mutation";
+import { CREATE_CUSTOMER, DELETE_CUSTOMER, UPDATE_CUSTOMER } from "./Graphql/Mutation";
 import { GET_ALL_CUSTOMER } from "./Graphql/Queries";
 import { GET_SINGLE_CUSTOMER } from "./Graphql/Queries";
 import { rootShouldForwardProp } from "@mui/material/styles/styled";
@@ -22,10 +22,13 @@ export default function Home() {
   const [dob,setDob]=useState('');
   const [searchId,setSeacrhId]=useState('')
 
-  const [createCustomer,{error}]=useMutation(CREATE_CUSTOMER);
-
   const {data}=useQuery(GET_ALL_CUSTOMER);
 
+  const [createCustomer]=useMutation(CREATE_CUSTOMER);
+  const [deleteCustomerById]=useMutation(DELETE_CUSTOMER);
+  const [updateCustomerRecord]=useMutation(UPDATE_CUSTOMER);
+
+  // const [getSingleCustomer,{data}]=useQuery(GET_SINGLE_CUSTOMER);
 
   const saveCustomer=()=>{
     createCustomer({
@@ -36,19 +39,43 @@ export default function Home() {
         mobile:mobile,
         dob:dob,
       },
-    });
+    }
+    );
   }
 
   const UpdateCustomer=()=>{
     console.log("Update")
+    updateCustomerRecord({
+      variables: {
+        id:id,
+        name: name,
+        address: address,
+        email: email,
+        mobile:mobile,
+        dob:dob,
+      },
+    }
+    );
   }
 
   const deleteCustomer=()=>{
     console.log("delete")
+    deleteCustomerById({
+      variables:{
+        id:id
+      }
+    })
   }
 
   const searchCustomer=()=>{
-    
+
+    // getSingleCustomer({
+    //   variables: {
+    //     id: searchId,
+    //   },
+    // }
+    // );
+    console.log(data)
   }
 
   return (
@@ -180,7 +207,7 @@ export default function Home() {
                 </tr>
               </thead>
               <tbody>
-                {
+              {data &&
                    data.getAllCustomer.map((row,index)=>(
                     <tr key={index}>
                     <th scope="row">{row.id}</th>

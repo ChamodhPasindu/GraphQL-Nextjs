@@ -14,8 +14,8 @@ export const GET_ALL_CUSTOMER = gql`
 `;
 
 export const GET_SINGLE_CUSTOMER = gql`
-  query getSingleCustomer {
-    getSingleCustomer(id: 5) {
+  query getSingleCustomer($id: ID!) {
+    getSingleCustomer(id:$id) {
       id
       name
       address
