@@ -5,8 +5,12 @@ import styles from "../styles/Home.module.css";
 import { BiUserPlus } from "react-icons/bi";
 import { border } from "@mui/system";
 import { useState } from "react";
+import { useQuery,useMutation } from "@apollo/client";
+
 import { CREATE_CUSTOMER } from "./Graphql/Mutation";
-import { useMutation } from "@apollo/client";
+import { GET_ALL_CUSTOMER } from "./Graphql/Queries";
+import { GET_SINGLE_CUSTOMER } from "./Graphql/Queries";
+import { rootShouldForwardProp } from "@mui/material/styles/styled";
 
 export default function Home() {
 
@@ -16,8 +20,12 @@ export default function Home() {
   const [email,setEmail]=useState('');
   const [mobile,setMobile]=useState('');
   const [dob,setDob]=useState('');
+  const [searchId,setSeacrhId]=useState('')
 
-const [createCustomer, { error }] = useMutation(CREATE_CUSTOMER);
+  const [createCustomer,{error}]=useMutation(CREATE_CUSTOMER);
+
+  const {data}=useQuery(GET_ALL_CUSTOMER);
+
 
   const saveCustomer=()=>{
     createCustomer({
@@ -37,6 +45,10 @@ const [createCustomer, { error }] = useMutation(CREATE_CUSTOMER);
 
   const deleteCustomer=()=>{
     console.log("delete")
+  }
+
+  const searchCustomer=()=>{
+    
   }
 
   return (
@@ -64,11 +76,14 @@ const [createCustomer, { error }] = useMutation(CREATE_CUSTOMER);
                 type="search"
                 placeholder="Search"
                 aria-label="Search"
+                onChange={(e)=>setSeacrhId(e.target.value)}
               />
               <button
                 className={styles.search}
                 class="btn btn-success my-2 my-sm-0"
-                type="submit"
+                type="button"
+                onClick={()=>searchCustomer()}
+              
               >
                 Search
               </button>
@@ -165,30 +180,18 @@ const [createCustomer, { error }] = useMutation(CREATE_CUSTOMER);
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <th scope="row">C-00001</th>
-                  <td>Nethmini Gayathree</td>
-                  <td>neth@gmail.com</td>
-                  <td>0774914870</td>
-                  <td>1999/03/04</td>
-                  <td>No-35/4, malluruwa panadura</td>
-                </tr>
-                <tr>
-                  <th scope="row">C-00002</th>
-                  <td>Prabhashwaree silva</td>
-                  <td>prabha@gmail.com</td>
-                  <td>0774914870</td>
-                  <td>1999/03/04</td>
-                  <td>No-6/4, kaluthara</td>
-                </tr>
-                <tr>
-                  <th scope="row">C-00003</th>
-                  <td>Karunamuni silva</td>
-                  <td>karuna@gmail.com</td>
-                  <td>0774914870</td>
-                  <td>1999/03/04</td>
-                  <td>No-74/2, Colombo</td>
-                </tr>
+                {
+                   data.getAllCustomer.map((row,index)=>(
+                    <tr key={index}>
+                    <th scope="row">{row.id}</th>
+                    <td>{row.name}</td>
+                    <td>{row.email}</td>
+                    <td>{row.mobile}</td>
+                    <td>{row.dob}</td>
+                    <td>{row.address}</td>
+                  </tr>
+                  ))
+                }
               </tbody>
             </table>
           </section>

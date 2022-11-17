@@ -18,7 +18,6 @@ export const GET_SINGLE_CUSTOMER={
     async resolve(parent:any,args:any){
         const id=args.id
         const customer=await Customer.findBy({id:id})
-        console.log(customer)
 
         if(customer.length === 0){
             throw new Error("Empty Record");
