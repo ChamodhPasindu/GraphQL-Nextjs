@@ -25,29 +25,38 @@ export default function Home() {
   const [mobile, setMobile] = useState("");
   const [dob, setDob] = useState("");
   const [searchId, setSeacrhId] = useState("");
+  const [customer,setCustomer]=useState("");
 
   const [createCustomer] = useMutation(CREATE_CUSTOMER,{
     onCompleted:(data)=>{
       alert(data.createCustomer.message)
+      window.location.reload();
     }
   });
 
   const [deleteCustomerById] = useMutation(DELETE_CUSTOMER,{
     onCompleted:(data)=>{
       alert(data.deleteCustomer.message)
+      window.location.reload();
     }
   });
 
   const [updateCustomerRecord] = useMutation(UPDATE_CUSTOMER,{
     onCompleted:(data)=>{
       alert(data.updateCustomer.message)
+      window.location.reload();
     }
   });
 
-  const { data } = useQuery(GET_ALL_CUSTOMER);
-
-  //const {data}=useQuery(GET_SINGLE_CUSTOMER);
-
+  const {data} = useQuery(GET_ALL_CUSTOMER);
+  const {}=useQuery(GET_SINGLE_CUSTOMER,{
+    variables:{
+      id:searchId
+    },
+    onCompleted:(data)=>{
+      setCustomer(data)
+    }
+  });
 
   const clearInputs = () => {
     setId("");
@@ -82,8 +91,7 @@ export default function Home() {
           mobile: mobile,
           dob: dob,
         },
-      }
-    );
+      });
     clearInputs();
   };
 
@@ -97,14 +105,12 @@ export default function Home() {
   };
 
   const searchCustomer = () => {
-   //const { data } = useQuery(GET_ALL_CUSTOMER);
-    // getSingleCustomer({
-    //   variables: {
-    //     id: searchId,
-    //   },
-    // }
-    // );
-    console.log(data)
+    setId(customer.getSingleCustomer.id)
+    setName(customer.getSingleCustomer.name)
+    setEmail(customer.getSingleCustomer.email)
+    setMobile(customer.getSingleCustomer.mobile)
+    setDob(customer.getSingleCustomer.dob)
+    setAddress(customer.getSingleCustomer.address)
   };
 
   return (
